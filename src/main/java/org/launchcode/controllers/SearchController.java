@@ -1,6 +1,6 @@
 package org.launchcode.controllers;
 
-import com.sun.org.apache.regexp.internal.RE;
+//import com.sun.org.apache.regexp.internal.RE;
 import org.launchcode.models.JobData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,14 +27,18 @@ public class SearchController {
 
     // TODO #1 - Create handler to process search request and display results
 
-    @RequestMapping(value="results", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="results", method = RequestMethod.GET)
     public String search(@RequestParam String searchType, @RequestParam String searchTerm, Model model){
-        model.addAttribute("columns", ListController.columnChoices);
-        ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(searchType, searchTerm);
-        model.addAttribute("title", "Jobs with " + ListController.columnChoices.get(searchType) + ": " + searchTerm);
-        model.addAttribute("jobs", jobs);
+        ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(searchType, searchTerm); //if value is all, what is stored as searchType here
+        if (searchType.equals("all")){
+            jobs = JobData.findByValue(searchTerm);
+        }
 
-        System.out.println(JobData.findByColumnAndValue(searchType, searchTerm));
+        model.addAttribute("columns", ListController.columnChoices);
+//        model.addAttribute("title", "Jobs with " + ListController.columnChoices.get(searchType) + ": " + searchTerm);
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("resultsCount", jobs.size() + " Result(s)");
+
 
         return "search";
     }
