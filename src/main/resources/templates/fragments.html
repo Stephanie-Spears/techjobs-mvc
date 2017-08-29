@@ -27,5 +27,26 @@
         </div>
     </div>
 
+    <div th:fragment="jobList" class="job-listing">
+        <div th:if="${jobs} and ${jobs.size()}">
+            <h3 th:text="${jobs.size()} + ' Result(s)'"></h3>
+            <div th:each="job : ${jobs}">
+                <table class="job-listing">
+                    <tr th:each="item : ${job.entrySet()}">
+                        <td th:text="${#strings.capitalizeWords(item.getKey())}"></td>
+                        <td th:unless="${item.key.equals('name')}">
+                            <a  th:href="@{/list/jobs(column=${item.key},value=${item.value})}"
+                                th:text="${item.value}"></a>
+                        </td>
+                        <td th:if="${item.key.equals('name')}" th:text="${item.value}"></td>
+                    </tr>
+                </table>
+                <hr />
+            </div>
+        </div>
+
+
+    </div>
+
 </body>
 </html>
