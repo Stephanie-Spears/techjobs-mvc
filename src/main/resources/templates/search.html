@@ -20,7 +20,7 @@
                         name="searchType"
                         th:id="${column.key}"
                         th:value="${column.key}"
-                        th:checked="${column.key == 'all'}"/>
+                        th:checked="${column.key} == ${col}"/>
                 <label th:for="${column.key}" th:text="${column.value}"></label>
             </span>
 
@@ -28,7 +28,7 @@
 
         <p>
             <label for="searchTerm">Keyword:</label>
-            <input type="text" name="searchTerm" id="searchTerm" />
+            <input type="text" name="searchTerm" id="searchTerm" th:value="${term}" />
         </p>
 
         <input type="submit" value="Search" />
@@ -37,7 +37,30 @@
     <hr />
 
     <!-- TODO #2 - Loop over jobs map to display all job fields -->
-    <div th:replace="fragments :: jobsList"></div>
+    <div th:if="${jobs} and ${jobs.size()}">
+        <h3 th:text="${jobs.size()} + ' Result(s)'"></h3>
+
+        <div th:each="job : ${jobs}">
+            <table class="job-listing">
+                <tr th:each="item : ${job.entrySet()}">
+
+                    <td th:text="${#strings.capitalizeWords(item.getKey())}"></td>
+
+                    <!--Make each value (except name) hyperlinked to the listing of all jobs with that value -->
+                    <td th:unless="${item.key.equals('name')}">
+                        <a  th:href="@{/list/jobs(column=${item.key},value=${item.value})}"
+                            th:text="${item.value}">
+                        </a>
+                    </td>
+                    <td th:if="${item.key.equals('name')}" th:text="${item.value}"></td>
+                </tr>
+            </table>
+
+            <hr />
+        </div>
+    </div>
+
+
 </div>
 
 </body>
